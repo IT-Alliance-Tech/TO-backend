@@ -1,13 +1,18 @@
-require("dotenv").config(); 
-const app = require('./app');
-const http = require('http');
+const path = require("path");
+
+// Load env from backend/.env
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+
+console.log("DEBUG server.js -> MONGO_URI:", !!process.env.MONGO_URI);
+
+const http = require("http");
+const app = require("./app");
+const connectDB = require("./config/db");
+
 const PORT = process.env.PORT || 3000;
 
-app.use((req, res, next) => {
-  const now = new Date().toISOString();
-  console.log(`[${now}] ${req.method} ${req.originalUrl} from ${req.ip}`);
-  next();
-});
+// Connect to DB first
+connectDB();
 
 const server = http.createServer(app);
 

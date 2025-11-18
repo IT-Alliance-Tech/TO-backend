@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -10,13 +10,13 @@ const userSchema = new Schema({
   phone: { type: String },
   password: { type: String },
   verified: { type: Boolean, default: false },
-  role: { type: String, default: 'user' },
-  createdAt: { type: Date, default: Date.now }
+  role: { type: String, default: "user" },
+  createdAt: { type: Date, default: Date.now },
 });
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
     return next();
   }
 
@@ -30,4 +30,20 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+const UserSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String },
+    // store current active userSubscription id for quick lookup (nullable)
+    currentUserSubscription: {
+      type: Schema.Types.ObjectId,
+      ref: "UserSubscription",
+      default: null,
+    },
+    meta: { type: Schema.Types.Mixed, default: {} },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("User", userSchema);

@@ -9,7 +9,7 @@ const { ROLES } = require('../utils/constants');
 
 // Generate JWT Token
 const generateToken = async (user) => {
-  return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
 // Register user
